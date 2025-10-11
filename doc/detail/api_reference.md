@@ -1,17 +1,200 @@
-# TrckTrade API 接口参考
+# TrickTrade API 接口参考 (优化版)
 
 ## 概述
 
-本文档详细描述了TrckTrade平台的所有API接口，包括数据获取、策略管理、回测引擎、机器学习等模块的接口规范。
+本文档描述了基于新架构的TrickTrade平台API接口，采用分层设计，支持MVP优先的开发策略。接口设计遵循RESTful原则，提供清晰的版本控制和扩展机制。
 
-## 目录
+## API设计原则
 
-- [数据获取接口](#数据获取接口)
-- [策略管理接口](#策略管理接口)
-- [回测引擎接口](#回测引擎接口)
-- [机器学习接口](#机器学习接口)
-- [可视化接口](#可视化接口)
-- [配置管理接口](#配置管理接口)
+### 1. 分层设计
+- **应用服务层**: 提供业务逻辑API
+- **数据访问层**: 提供数据操作API
+- **基础设施层**: 提供系统管理API
+
+### 2. 版本控制
+- **URL版本控制**: `/api/v1/`, `/api/v2/`
+- **向后兼容**: 保持API向后兼容性
+- **弃用策略**: 提供明确的弃用通知
+
+### 3. 错误处理
+- **统一错误格式**: 标准化的错误响应
+- **错误码规范**: 明确的错误分类和代码
+- **错误详情**: 提供详细的错误信息
+
+## MVP阶段API设计
+
+### 1. 核心API接口
+
+#### 1.1 数据获取API
+```python
+# 基础数据获取接口
+class DataAPI:
+    """数据获取API - MVP版本"""
+    
+    def get_historical_data(self, symbol: str, start_date: str, end_date: str) -> Dict:
+        """
+        获取历史数据
+        
+        Args:
+            symbol: 标的代码 (如: "000001", "510300")
+            start_date: 开始日期 (格式: "YYYY-MM-DD")
+            end_date: 结束日期 (格式: "YYYY-MM-DD")
+            
+        Returns:
+            {
+                "status": "success",
+                "data": {
+                    "symbol": "000001",
+                    "data": [
+                        {
+                            "date": "2024-01-01",
+                            "open": 10.50,
+                            "high": 10.80,
+                            "low": 10.30,
+                            "close": 10.70,
+                            "volume": 1000000
+                        }
+                    ]
+                }
+            }
+        """
+        pass
+    
+    def get_available_symbols(self) -> Dict:
+        """
+        获取可用的标的列表
+        
+        Returns:
+            {
+                "status": "success",
+                "data": {
+                    "stocks": ["000001", "000002", ...],
+                    "funds": ["510300", "159915", ...]
+                }
+            }
+        """
+        pass
+```
+
+#### 1.2 策略API
+```python
+# 基础策略接口
+class StrategyAPI:
+    """策略API - MVP版本"""
+    
+    def get_available_strategies(self) -> Dict:
+        """
+        获取可用的策略列表
+        
+        Returns:
+            {
+                "status": "success",
+                "data": {
+                    "strategies": [
+                        {
+                            "id": "moving_average",
+                            "name": "移动平均策略",
+                            "description": "基于移动平均线的交易策略",
+                            "parameters": {
+                                "ma_period": {"type": "int", "default": 20, "min": 5, "max": 100}
+                            }
+                        }
+                    ]
+                }
+            }
+        """
+        pass
+    
+    def run_strategy(self, strategy_id: str, symbol: str, parameters: Dict) -> Dict:
+        """
+        运行策略
+        
+        Args:
+            strategy_id: 策略ID
+            symbol: 标的代码
+            parameters: 策略参数
+            
+        Returns:
+            {
+                "status": "success",
+                "data": {
+                    "strategy_id": "moving_average",
+                    "symbol": "000001",
+                    "signals": [
+                        {
+                            "date": "2024-01-01",
+                            "signal": "buy",
+                            "price": 10.70,
+                            "confidence": 0.8
+                        }
+                    ]
+                }
+            }
+        """
+        pass
+```
+
+#### 1.3 回测API
+```python
+# 基础回测接口
+class BacktestAPI:
+    """回测API - MVP版本"""
+    
+    def run_backtest(self, request: BacktestRequest) -> Dict:
+        """
+        运行回测
+        
+        Args:
+            request: 回测请求
+            {
+                "strategy_id": "moving_average",
+                "symbol": "000001",
+                "start_date": "2024-01-01",
+                "end_date": "2024-12-31",
+                "initial_cash": 100000,
+                "parameters": {"ma_period": 20}
+            }
+            
+        Returns:
+            {
+                "status": "success",
+                "data": {
+                    "backtest_id": "bt_123456",
+                    "results": {
+                        "total_return": 15.5,
+                        "sharpe_ratio": 1.2,
+                        "max_drawdown": -8.3,
+                        "win_rate": 65.0,
+                        "total_trades": 45
+                    },
+                    "trades": [...],
+                    "equity_curve": [...]
+                }
+            }
+        """
+        pass
+    
+    def get_backtest_status(self, backtest_id: str) -> Dict:
+        """
+        获取回测状态
+        
+        Args:
+            backtest_id: 回测ID
+            
+        Returns:
+            {
+                "status": "success",
+                "data": {
+                    "backtest_id": "bt_123456",
+                    "status": "completed",  # pending, running, completed, failed
+                    "progress": 100,
+                    "start_time": "2024-01-01T10:00:00Z",
+                    "end_time": "2024-01-01T10:05:00Z"
+                }
+            }
+        """
+        pass
+```
 
 ## 数据获取接口
 

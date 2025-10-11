@@ -42,26 +42,16 @@ TrckTrade是一个量化交易平台，主要面向公募基金提供量化交�
 ## 项目结构
 
 ### 数据获取与处理
-- **DataSource/**: 数据源模块，支持AKShare、Yahoo Finance等
-- **BackTest/data_provider.py**: 统一数据接口
+
 
 ### 回测
-- **BackTest/**: 回测框架，基于BackTrader
-- **BackTest/baseline_models.py**: 基础策略模型
-- **BackTest/backtest_framework.py**: 回测引擎
+
 
 ### 基金预测
-- **FundPrediction/**: 基金价格预测模块
-- **FundPrediction/predictors/**: 预测器（LSTM、XGBoost、Prophet、集成）
-- **FundPrediction/evaluators/**: 预测评估器
-- **FundPrediction/visualizers/**: 预测可视化器
+
 
 ### 关联性分析
-- **CorrelationAnalysis/**: 基金关联性分析模块
-- **CorrelationAnalysis/correlation/**: 相关性分析（皮尔森、斯皮尔曼、动态）
-- **CorrelationAnalysis/causality/**: 因果分析（格兰杰、协整）
-- **CorrelationAnalysis/clustering/**: 聚类分析
-- **CorrelationAnalysis/visualizers/**: 关联性可视化
+
 
 ### 机器学习策略
 - **RLStrategy/**: 强化学习策略（DQN、PPO）

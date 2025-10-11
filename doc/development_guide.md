@@ -1,8 +1,27 @@
-# TrckTrade 开发指南
+# TrickTrade 开发指南 (MVP优先策略)
 
 ## 概述
 
-本文档为TrckTrade量化投资平台的开发指南，包含环境搭建、项目结构、开发规范、测试指南等内容，帮助开发者快速上手并参与项目开发。
+本文档为TrickTrade量化投资平台的开发指南，采用MVP优先的开发策略，帮助开发者快速构建最小可行产品，然后通过迭代扩展功能。本指南包含环境搭建、项目结构、开发规范、测试指南等内容。
+
+## MVP优先开发策略
+
+### 1. 开发原则
+- **快速迭代**: 每2周一个迭代周期
+- **功能优先**: 先实现核心功能，再优化细节
+- **用户反馈**: 每个迭代都要获得用户反馈
+- **持续集成**: 自动化测试和部署
+
+### 2. 开发流程
+```
+需求分析 → 原型设计 → 快速开发 → 测试验证 → 用户反馈 → 迭代优化
+```
+
+### 3. 质量保证
+- **单元测试**: 核心功能必须有测试覆盖
+- **集成测试**: 关键业务流程测试
+- **代码审查**: 所有代码必须经过审查
+- **文档更新**: 及时更新开发文档
 
 ## 目录
 
@@ -188,65 +207,157 @@ dependencies:
 
 ## 项目结构
 
-### 1. 目录结构
+### 1. MVP阶段目录结构
 
 ```
 TrickTrade/
-├── BackTest/                 # 回测模块
+├── core/                    # 核心模块
 │   ├── __init__.py
-│   ├── backtest_framework.py
-│   ├── baseline_models.py
-│   ├── data_provider.py
-│   ├── example.py
-│   └── test.py
-├── CorrelationAnalysis/      # 相关性分析
-│   └── test.py
-├── DataSource/              # 数据源
-│   └── AKShareAPI.py
-├── RLStrategy/              # 强化学习策略
-│   ├── DQN/
-│   └── PPO/
-├── Startegy/                # 策略模块
-├── Visualize/               # 可视化模块
-├── doc/                     # 文档
-│   ├── architecture.md
-│   ├── data_flow.md
-│   ├── ml_strategy.md
-│   ├── api_reference.md
-│   └── development_guide.md
-├── config/                  # 配置文件
-│   ├── system.yaml
-│   └── strategies.yaml
-├── data/                    # 数据目录
-├── models/                  # 模型目录
-├── logs/                    # 日志目录
-├── tests/                   # 测试目录
-├── requirements.txt          # 依赖文件
-├── environment.yml          # Conda环境文件
-├── .gitignore              # Git忽略文件
-├── .flake8                 # 代码检查配置
-├── pyproject.toml          # 项目配置
-└── README.md               # 项目说明
+│   ├── data/               # 数据模块
+│   │   ├── __init__.py
+│   │   ├── provider.py     # 数据提供者
+│   │   ├── validator.py    # 数据验证
+│   │   └── storage.py      # 数据存储
+│   ├── strategy/           # 策略模块
+│   │   ├── __init__.py
+│   │   ├── base.py         # 策略基类
+│   │   ├── moving_average.py
+│   │   ├── rsi.py
+│   │   └── macd.py
+│   ├── backtest/           # 回测模块
+│   │   ├── __init__.py
+│   │   ├── engine.py       # 回测引擎
+│   │   └── metrics.py      # 性能指标
+│   └── visualization/      # 可视化模块
+│       ├── __init__.py
+│       ├── charts.py       # 图表生成
+│       └── reports.py      # 报告生成
+├── cli/                    # 命令行工具
+│   ├── __init__.py
+│   ├── main.py            # 主入口
+│   └── commands/          # 命令模块
+│       ├── __init__.py
+│       ├── data.py        # 数据命令
+│       ├── strategy.py    # 策略命令
+│       └── backtest.py    # 回测命令
+├── config/                 # 配置文件
+│   ├── default.yaml       # 默认配置
+│   └── mvp.yaml          # MVP配置
+├── tests/                  # 测试目录
+│   ├── __init__.py
+│   ├── test_data.py
+│   ├── test_strategy.py
+│   └── test_backtest.py
+├── examples/               # 示例代码
+│   ├── basic_usage.py
+│   ├── strategy_example.py
+│   └── backtest_example.py
+├── docs/                   # 文档
+│   ├── README.md
+│   ├── installation.md
+│   └── quickstart.md
+├── requirements.txt        # 依赖文件
+├── setup.py               # 安装脚本
+├── .gitignore            # Git忽略文件
+└── README.md             # 项目说明
 ```
 
-### 2. 模块说明
+### 2. 迭代阶段扩展结构
 
-#### 2.1 BackTest模块
-- `backtest_framework.py`: 回测框架核心
-- `baseline_models.py`: 基础策略模型
-- `data_provider.py`: 数据提供者
+```
+TrickTrade/
+├── core/                   # 核心模块 (扩展)
+│   ├── data/              # 数据模块
+│   ├── strategy/          # 策略模块
+│   ├── backtest/          # 回测模块
+│   ├── ml/                # 机器学习模块
+│   ├── risk/              # 风险管理模块
+│   ├── portfolio/         # 投资组合模块
+│   └── visualization/     # 可视化模块
+├── api/                   # API服务
+│   ├── __init__.py
+│   ├── app.py            # FastAPI应用
+│   ├── routes/           # 路由
+│   └── models/           # API模型
+├── web/                   # Web界面
+│   ├── frontend/         # 前端代码
+│   └── backend/          # 后端API
+├── cli/                   # 命令行工具
+├── config/                # 配置文件
+├── tests/                 # 测试目录
+├── examples/              # 示例代码
+├── docs/                  # 文档
+└── deployment/            # 部署配置
+```
 
-#### 2.2 DataSource模块
-- `AKShareAPI.py`: AKShare数据接口
+### 3. MVP快速开始
 
-#### 2.3 RLStrategy模块
-- `DQN/`: DQN强化学习策略
-- `PPO/`: PPO强化学习策略
+#### 3.1 安装和设置
+```bash
+# 1. 克隆项目
+git clone https://github.com/your-username/TrickTrade.git
+cd TrickTrade
 
-#### 2.4 其他模块
-- `Startegy/`: 传统策略实现
-- `Visualize/`: 可视化工具
-- `CorrelationAnalysis/`: 相关性分析工具
+# 2. 创建虚拟环境
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# 或
+venv\Scripts\activate     # Windows
+
+# 3. 安装依赖
+pip install -r requirements.txt
+
+# 4. 安装项目
+pip install -e .
+```
+
+#### 3.2 基础使用示例
+```python
+# 基础使用示例
+from tricktrade import DataProvider, Strategy, BacktestEngine
+
+# 1. 获取数据
+data_provider = DataProvider()
+data = data_provider.get_data("000001", "2024-01-01", "2024-12-31")
+
+# 2. 创建策略
+strategy = Strategy("moving_average", {"ma_period": 20})
+
+# 3. 运行回测
+engine = BacktestEngine(initial_cash=100000)
+results = engine.run_backtest(data, strategy)
+
+# 4. 查看结果
+print(f"总收益率: {results.total_return:.2f}%")
+print(f"夏普比率: {results.sharpe_ratio:.2f}")
+```
+
+#### 3.3 命令行使用
+```bash
+# 获取数据
+tricktrade data get --symbol 000001 --start 2024-01-01 --end 2024-12-31
+
+# 运行策略
+tricktrade strategy run --name moving_average --symbol 000001 --params '{"ma_period": 20}'
+
+# 运行回测
+tricktrade backtest run --strategy moving_average --symbol 000001 --start 2024-01-01 --end 2024-12-31
+```
+
+### 4. 模块说明
+
+#### 4.1 核心模块 (MVP阶段)
+- `core/data/`: 数据获取、验证、存储
+- `core/strategy/`: 策略框架和基础策略
+- `core/backtest/`: 回测引擎和性能指标
+- `core/visualization/`: 图表生成和报告
+
+#### 4.2 扩展模块 (迭代阶段)
+- `core/ml/`: 机器学习模型和预测
+- `core/risk/`: 风险管理和控制
+- `core/portfolio/`: 投资组合管理
+- `api/`: RESTful API服务
+- `web/`: Web用户界面
 
 ## 开发规范
 
