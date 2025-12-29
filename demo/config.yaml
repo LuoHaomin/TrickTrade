@@ -1,0 +1,128 @@
+# 基金强化学习策略Demo配置文件
+
+# ETF配置
+symbol: '510300'  # ETF代码 (沪深300ETF)
+start_date: '2020-01-01'  # 数据开始日期
+end_date: '2024-12-31'    # 数据结束日期
+train_ratio: 0.8          # 训练数据比例
+
+# 数据配置
+data:
+  cache_dir: 'demo/data'
+  use_cache: true
+  cache_expiry_hours: 24
+
+# 强化学习训练配置
+rl_training:
+  # PPO超参数
+  learning_rate: 3e-4
+  n_steps: 2048
+  batch_size: 64
+  n_epochs: 10
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.01
+  vf_coef: 0.5
+  max_grad_norm: 0.5
+  
+  # 训练参数
+  total_timesteps: 100000
+  eval_freq: 10000
+  save_freq: 20000
+  verbose: 1
+  
+  # 输出配置
+  output_dir: 'demo/output'
+  tensorboard_log: true
+
+# 环境配置
+env:
+  initial_balance: 100000.0
+  commission_rate: 0.001
+  max_position: 1.0
+  lookback_window: 20
+  
+  # 奖励函数参数
+  reward_scale: 1.0
+  penalty_scale: 0.1
+  transaction_penalty: 0.001
+
+# 特征工程配置
+features:
+  ma_periods: [5, 10, 20, 60]
+  rsi_period: 14
+  macd_fast: 12
+  macd_slow: 26
+  macd_signal: 9
+  bb_period: 20
+  bb_std: 2
+  momentum_period: 10
+  price_change_periods: [1, 3, 5, 10]
+  volume_periods: [5, 10, 20]
+
+# 回测配置
+backtest:
+  initial_cash: 100000.0
+  commission: 0.001
+  slippage: 0.0005
+  
+  # 测试期间
+  test_start_date: '2024-01-01'
+  test_end_date: '2024-12-31'
+  
+  # 策略配置
+  strategies:
+    rl_strategy:
+      model_path: 'demo/output/models/ppo_trading_model.zip'
+      lookback_window: 20
+      position_threshold: 0.1
+      printlog: false
+    
+    buy_and_hold:
+      printlog: false
+    
+    moving_average:
+      ma_period: 20
+      printlog: false
+
+# 可视化配置
+visualization:
+  figure_size: [15, 10]
+  dpi: 300
+  style: 'seaborn-v0_8'
+  color_palette: 'husl'
+  font_size: 12
+  title_size: 16
+  label_size: 14
+
+# 输出配置
+output:
+  dir: 'demo/output'
+  create_plots: true
+  save_results: true
+  export_csv: true
+  
+  # 日志配置
+  log_level: 'INFO'
+  log_file: 'demo/output/logs/main.log'
+
+# 高级配置（可选）
+advanced:
+  # 超参数优化
+  hyperparameter_tuning:
+    enabled: false
+    param_grid:
+      learning_rate: [1e-4, 3e-4, 1e-3]
+      n_steps: [1024, 2048, 4096]
+      batch_size: [32, 64, 128]
+  
+  # 模型集成
+  ensemble:
+    enabled: false
+    models: []
+  
+  # 实时交易（实验性）
+  live_trading:
+    enabled: false
+    broker: 'simulation'
